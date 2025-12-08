@@ -1,0 +1,2263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperPratika - Practice anywhere, as much as possible</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px 40px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-text h1 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filters select {
+            padding: 10px 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9em;
+            min-width: 140px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .filters select:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .filters select option {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .content {
+            display: flex;
+            min-height: calc(100vh - 120px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #1a2a3a 0%, #2c3e50 100%);
+            border-right: 1px solid #34495e;
+            padding: 30px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 35px;
+        }
+
+        .nav-title {
+            font-size: 0.75em;
+            font-weight: 700;
+            color: #3498db;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            padding: 0 25px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            padding: 16px 25px;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            color: #bdc3c7;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(52, 152, 219, 0.15);
+            color: #ecf0f1;
+            border-left-color: #3498db;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+            border-left-color: #1a5276;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 1.2em;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main {
+            flex: 1;
+            padding: 30px;
+            background: #fafbfc;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .section-subtitle {
+            color: #6c757d;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+        }
+
+        .exercises-count {
+            background: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .exercises-container {
+            min-height: 600px;
+        }
+
+        .exercise-form, .event-form {
+            max-width: 800px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9em;
+        }
+
+        .input-hint {
+            color: #6c757d;
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: block;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .options-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .option-item {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .option-input {
+            flex: 1;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add:hover {
+            background: #219a52;
+            transform: translateY(-1px);
+        }
+
+        .correct-option {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #dee2e6;
+        }
+
+        .btn-publish, .btn-create-event {
+            background: linear-gradient(135deg, #27ae60, #219a52);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-publish:hover, .btn-create-event:hover {
+            background: linear-gradient(135deg, #219a52, #27ae60);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .exercises-list,
+        .corrections-list,
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .exercise-card,
+        .correction-card,
+        .event-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover,
+        .correction-card:hover,
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+            border-color: #3498db;
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .exercise-question {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.1em;
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .exercise-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .exercise-tag {
+            background: #e9ecef;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .exercise-options {
+            margin: 15px 0;
+        }
+
+        .option-item-user {
+            padding: 12px 15px;
+            margin: 8px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .option-item-user:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+
+        .option-item-user.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .option-item-user.correct {
+            border-color: #27ae60;
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .option-item-user.incorrect {
+            border-color: #e74c3c;
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .option-text {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .exercise-explanation {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+            font-size: 0.9em;
+        }
+
+        .next-exercise-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .next-exercise-btn:hover {
+            background: #2980b9;
+        }
+
+        .tandem-request {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .correction-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .correction-form {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .open-answer-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .event-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .event-date {
+            color: #6c757d;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+        }
+
+        .event-location {
+            color: #3498db;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .event-description {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.9em;
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #856404;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+        }
+
+        .tandem-badge {
+            background: #9b59b6;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+        }
+
+        .location-badge {
+            background: #3498db;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .event-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .event-filters input {
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            color: #2c3e50;
+            font-size: 0.9em;
+            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .event-filters input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Nuovi stili per audio */
+        .audio-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .audio-upload-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .audio-preview {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .audio-player {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .audio-filename {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .btn-audio {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-audio:hover {
+            background: #2980b9;
+        }
+
+        .btn-remove-audio {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .btn-remove-audio:hover {
+            background: #c0392b;
+        }
+
+        .exercise-audio {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .audio-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .audio-note {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3498db;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #34495e;
+                padding: 20px 0;
+            }
+            
+            .nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 20px;
+                gap: 10px;
+            }
+            
+            .nav-section {
+                margin-bottom: 0;
+                flex-shrink: 0;
+            }
+            
+            .nav-btn {
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 4px solid transparent;
+                padding: 12px 20px;
+                flex-direction: column;
+                gap: 5px;
+                min-width: 100px;
+            }
+            
+            .nav-btn.active {
+                border-left: none;
+                border-bottom-color: #1a5276;
+            }
+            
+            .nav-title {
+                display: none;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .main {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filters {
+                justify-content: center;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .event-filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-container">
+                        <div class="logo-text">
+                            <h1>SuperPratika</h1>
+                            <p class="tagline">Practice anywhere, as much as possible</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filters">
+                    <select id="filter-language">
+                        <option value="">All languages</option>
+                        <option value="english">English</option>
+                        <option value="spanish">Spanish</option>
+                        <option value="french">French</option>
+                        <option value="german">German</option>
+                        <option value="italian">Italian</option>
+                        <option value="chinese">Chinese</option>
+                    </select>
+                    
+                    <select id="filter-topic">
+                        <option value="">All topics</option>
+                    </select>
+                    
+                    <select id="filter-tutor">
+                        <option value="">All tutors</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <aside class="sidebar">
+                <nav class="nav">
+                    <div class="nav-section">
+                        <div class="nav-title">PRACTICE</div>
+                        <button class="nav-btn active" data-section="storm">
+                            <span class="nav-icon">⚡</span>
+                            <span class="nav-text">Storm</span>
+                        </button>
+                        <button class="nav-btn" data-section="practice-native">
+                            <span class="nav-icon">👑</span>
+                            <span class="nav-text">Practice with a Native</span>
+                        </button>
+                    </div>
+                    
+                    <div class="nav-section">
+                        <div class="nav-title">CREATE</div>
+                        <button class="nav-btn" data-section="create-exercise">
+                            <span class="nav-icon">✨</span>
+                            <span class="nav-text">Create Exercise</span>
+                        </button>
+                    </div>
+
+                    <div class="nav-section">
+                        <div class="nav-title">COMMUNITY</div>
+                        <button class="nav-btn" data-section="events-exchanges">
+                            <span class="nav-icon">📅</span>
+                            <span class="nav-text">Events and Exchanges</span>
+                        </button>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="main">
+                <section id="storm" class="section active">
+                    <div class="section-header">
+                        <h2>Storm - Quick Practice</h2>
+                        <div class="exercises-count" id="storm-count">0 exercises</div>
+                    </div>
+                    <div class="exercises-container">
+                        <div id="storm-list" class="exercises-list">
+                            <p>Loading exercises...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="practice-native" class="section">
+                    <div class="section-header">
+                        <h2>Practice with a Native</h2>
+                        <div class="exercises-count" id="native-count">0 exercises</div>
+                    </div>
+                    <div class="exercises-container">
+                        <div id="native-list" class="exercises-list">
+                            <p>Loading exercises...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="create-exercise" class="section">
+                    <h2>Create an Exercise</h2>
+                    <p class="section-subtitle">Anyone can create and share exercises</p>
+                    
+                    <form id="exercise-form" class="exercise-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Your Name *</label>
+                                <input type="text" id="creator-name" placeholder="Your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Language *</label>
+                                <select id="exercise-language" required>
+                                    <option value="">Select language</option>
+                                    <option value="english">English</option>
+                                    <option value="spanish">Spanish</option>
+                                    <option value="french">French</option>
+                                    <option value="german">German</option>
+                                    <option value="italian">Italian</option>
+                                    <option value="chinese">Chinese</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Topic *</label>
+                            <input type="text" id="exercise-topic" placeholder="Ex: Grammar, Vocabulary..." required>
+                            <small class="input-hint">This topic will appear in filters</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Exercise Type *</label>
+                            <select id="correction-type" required>
+                                <option value="auto">Auto-correction (Appears in Storm)</option>
+                                <option value="native">Native speaker correction (Appears in Practice with a Native)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Question *</label>
+                            <textarea id="question" placeholder="Enter the exercise question..." rows="3" required></textarea>
+                        </div>
+
+                        <div id="audio-section" class="audio-section">
+                            <h3>Audio (Optional)</h3>
+                            <div class="audio-upload-container">
+                                <label class="btn-audio" for="audio-upload">
+                                    <span>🎵</span>
+                                    Upload Audio File
+                                </label>
+                                <input type="file" id="audio-upload" accept="audio/*" class="hidden">
+                                <div class="audio-filename" id="audio-filename"></div>
+                            </div>
+                            
+                            <div id="audio-preview" class="audio-preview">
+                                <audio controls id="audio-player" class="audio-player">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="upload-progress"></div>
+                                </div>
+                                <button type="button" class="btn-remove-audio" onclick="removeAudio()">
+                                    Remove Audio
+                                </button>
+                                <div class="audio-note">
+                                    Supported formats: MP3, WAV, OGG, M4A (Max 10MB)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Answer Type *</label>
+                            <select id="answer-type" required>
+                                <option value="multiple">Multiple Choice</option>
+                                <option value="open">Open Answer</option>
+                            </select>
+                        </div>
+
+                        <div id="multiple-choice-section" class="options-section">
+                            <h3>Answer Options *</h3>
+                            <div id="options-container">
+                                <div class="option-item">
+                                    <input type="text" class="option-input" placeholder="Option 1" required>
+                                    <button type="button" class="btn-delete" onclick="removeOption(this)">Delete</button>
+                                </div>
+                                <div class="option-item">
+                                    <input type="text" class="option-input" placeholder="Option 2" required>
+                                    <button type="button" class="btn-delete" onclick="removeOption(this)">Delete</button>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="btn-add" onclick="addOption()">
+                                <span>+</span>
+                                Add option
+                            </button>
+                            
+                            <div class="correct-option">
+                                <label>Select the correct answer:</label>
+                                <select id="correct-option">
+                                    <option value="1">Option 1</option>
+                                    <option value="2">Option 2</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="open-answer-section" class="open-answer-section hidden">
+                            <h3>Open Answer Exercise</h3>
+                            <p>Students will be able to write free-form answers that native speakers can correct.</p>
+                        </div>
+
+                        <div class="tandem-request">
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="tandem-request">
+                                    Request Tandem Practice for this exercise
+                                </label>
+                                <small class="input-hint">If checked, users can request to practice this topic with you</small>
+                            </div>
+                            
+                            <div id="tandem-details" class="hidden">
+                                <div class="form-group">
+                                    <label>Your available languages for tandem</label>
+                                    <input type="text" id="tandem-languages" placeholder="Ex: English, Spanish, French">
+                                </div>
+                                <div class="form-group">
+                                    <label>Preferred practice schedule</label>
+                                    <input type="text" id="tandem-schedule" placeholder="Ex: Weekends, Evenings">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Explanation</label>
+                            <textarea id="explanation" placeholder="Explain why this answer is correct..." rows="4"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-publish">
+                                <span>🚀</span>
+                                Publish Exercise
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <section id="events-exchanges" class="section">
+                    <div class="section-header">
+                        <h2>Events and Exchanges</h2>
+                        <button class="btn-create-event" onclick="showEventForm()">
+                            <span>➕</span>
+                            Create New Event
+                        </button>
+                    </div>
+
+                    <div class="event-filters">
+                        <input type="text" id="filter-city" placeholder="Filter by city name...">
+                    </div>
+
+                    <div id="event-form" class="event-form hidden">
+                        <h3>New Event</h3>
+                        <div class="form-group">
+                            <label>Event Title *</label>
+                            <input type="text" id="event-title" placeholder="Event title">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date *</label>
+                                <input type="date" id="event-date">
+                            </div>
+                            <div class="form-group">
+                                <label>Time *</label>
+                                <input type="time" id="event-time">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Location Type</label>
+                            <select id="location-type">
+                                <option value="online">Online</option>
+                                <option value="cafe">Cafe</option>
+                                <option value="library">Library</option>
+                                <option value="park">Park</option>
+                                <option value="school">School/University</option>
+                                <option value="community-center">Community Center</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Location Name *</label>
+                            <input type="text" id="event-location" placeholder="Name of the location">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>City *</label>
+                                <input type="text" id="event-city" placeholder="Enter city name">
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" id="event-address" placeholder="Street address">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Language</label>
+                            <select id="event-language">
+                                <option value="english">English</option>
+                                <option value="spanish">Spanish</option>
+                                <option value="french">French</option>
+                                <option value="german">German</option>
+                                <option value="italian">Italian</option>
+                                <option value="chinese">Chinese</option>
+                                <option value="multilingual">Multilingual</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="event-description" placeholder="Event description..." rows="4"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-publish" onclick="saveEvent()">
+                                <span>💾</span>
+                                Save Event
+                            </button>
+                            <button type="button" class="next-exercise-btn" onclick="hideEventForm()">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="events-full">
+                        <h3>Upcoming Events</h3>
+                        <div id="events-list" class="events-list">
+                            <!-- Events will be added here dynamically -->
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAZIONE SUPABASE AGGIORNATA
+        const supabaseUrl = 'https://sfvhnggywsdekmarrxlt.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmdmhuZ2d5d3NkZWttYXJyeGx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MTgyNDMsImV4cCI6MjA3OTk5NDI0M30.C0JHrInUNYdukmgxjWEBFkjLEL0BzcM2hTWBDkjvNNw'
+        
+        // Crea il client Supabase
+        let supabase;
+        
+        // Application data
+        window.exercises = [];
+        window.events = [];
+        let topics = new Set();
+        let tutors = new Set();
+        let optionCounter = 2;
+        let currentExerciseIndex = 0;
+        
+        // Audio management
+        let currentAudioFile = null;
+        
+        // Genera un ID utente unico per ogni dispositivo
+        let currentUser = localStorage.getItem('superpractice_user_id');
+        if (!currentUser) {
+            currentUser = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('superpractice_user_id', currentUser);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Inizializza Supabase
+            try {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                console.log('✅ Supabase client inizializzato');
+            } catch (error) {
+                console.error('❌ Errore inizializzazione Supabase:', error);
+                supabase = null;
+            }
+            
+            await loadDataFromSupabase();
+            initializeNavigation();
+            initializeAudioUpload();
+            loadStormExercises();
+            loadNativeExercises();
+            loadEvents();
+            updateFilters();
+            
+            // Form handling
+            document.getElementById('exercise-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                publishExercise();
+            });
+            
+            // Tandem request toggle
+            document.getElementById('tandem-request').addEventListener('change', function() {
+                document.getElementById('tandem-details').classList.toggle('hidden', !this.checked);
+            });
+            
+            // Answer type toggle
+            document.getElementById('answer-type').addEventListener('change', function() {
+                const isMultipleChoice = this.value === 'multiple';
+                document.getElementById('multiple-choice-section').classList.toggle('hidden', !isMultipleChoice);
+                document.getElementById('open-answer-section').classList.toggle('hidden', isMultipleChoice);
+                
+                if (!isMultipleChoice) {
+                    document.getElementById('correction-type').value = 'native';
+                    document.getElementById('correction-type').disabled = true;
+                } else {
+                    document.getElementById('correction-type').disabled = false;
+                }
+            });
+            
+            // Correction type toggle
+            document.getElementById('correction-type').addEventListener('change', function() {
+                if (this.value === 'auto') {
+                    document.getElementById('answer-type').value = 'multiple';
+                    document.getElementById('multiple-choice-section').classList.remove('hidden');
+                    document.getElementById('open-answer-section').classList.add('hidden');
+                }
+            });
+            
+            // Filter handling
+            document.getElementById('filter-language').addEventListener('change', filterContent);
+            document.getElementById('filter-topic').addEventListener('change', filterContent);
+            document.getElementById('filter-tutor').addEventListener('change', filterContent);
+            document.getElementById('filter-city').addEventListener('input', filterEvents);
+            
+            // Carica dati di esempio se necessario
+            if (window.exercises.length === 0 && window.events.length === 0) {
+                initializeSampleData();
+            }
+        });
+
+        // FUNZIONI SUPABASE OTTIMIZZATE
+        async function loadDataFromSupabase() {
+            // Prima prova a caricare da localStorage per velocità
+            loadFromLocalStorage();
+            
+            if (!supabase) {
+                console.log('Supabase non disponibile, uso localStorage');
+                return;
+            }
+
+            try {
+                console.log('🔄 Caricamento dati da Supabase...');
+                
+                // Carica esercizi
+                const { data: exercisesData, error: exercisesError } = await supabase
+                    .from('exercises')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (!exercisesError && exercisesData) {
+                    window.exercises = exercisesData.map(ex => ({
+                        ...ex,
+                        // Converti i campi JSON se sono stringhe
+                        options: typeof ex.options === 'string' ? JSON.parse(ex.options) : ex.options,
+                        user_answers: typeof ex.user_answers === 'string' ? JSON.parse(ex.user_answers) : (ex.user_answers || {}),
+                        user_open_answers: typeof ex.user_open_answers === 'string' ? JSON.parse(ex.user_open_answers) : (ex.user_open_answers || {}),
+                        tandem_details: typeof ex.tandem_details === 'string' ? JSON.parse(ex.tandem_details) : (ex.tandem_details || null),
+                        corrections: typeof ex.corrections === 'string' ? JSON.parse(ex.corrections) : (ex.corrections || [])
+                    }));
+                    console.log(`✅ Caricati ${exercisesData.length} esercizi da Supabase`);
+                } else if (exercisesError) {
+                    console.error('Errore nel caricamento esercizi:', exercisesError);
+                }
+                
+                // Carica eventi
+                const { data: eventsData, error: eventsError } = await supabase
+                    .from('events')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                    
+                if (!eventsError && eventsData) {
+                    window.events = eventsData.map(ev => ({
+                        ...ev,
+                        participants: typeof ev.participants === 'string' ? JSON.parse(ev.participants) : (ev.participants || [])
+                    }));
+                    console.log(`✅ Caricati ${eventsData.length} eventi da Supabase`);
+                } else if (eventsError) {
+                    console.error('Errore nel caricamento eventi:', eventsError);
+                }
+                
+                // Aggiorna filtri
+                updateFiltersFromData();
+                
+            } catch (error) {
+                console.log('❌ Errore Supabase, uso localStorage:', error);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            const storedExercises = localStorage.getItem('superpractice_exercises');
+            const storedEvents = localStorage.getItem('superpractice_events');
+            
+            if (storedExercises) {
+                window.exercises = JSON.parse(storedExercises);
+            }
+            if (storedEvents) {
+                window.events = JSON.parse(storedEvents);
+            }
+        }
+
+        function updateFiltersFromData() {
+            window.exercises.forEach(exercise => {
+                topics.add(exercise.topic);
+                tutors.add(exercise.creator);
+            });
+        }
+
+        async function saveExercisesToSupabase() {
+            // Salva sempre in localStorage per backup
+            localStorage.setItem('superpractice_exercises', JSON.stringify(window.exercises));
+            
+            if (!supabase) {
+                console.log('Supabase non disponibile, salvo solo in localStorage');
+                return;
+            }
+
+            try {
+                for (const exercise of window.exercises) {
+                    // Prepara i dati per Supabase
+                    const supabaseExercise = {
+                        id: exercise.id,
+                        created_at: exercise.created_at || exercise.createdAt || new Date().toISOString(),
+                        creator: exercise.creator,
+                        language: exercise.language,
+                        topic: exercise.topic,
+                        correction_type: exercise.correctionType || exercise.correction_type,
+                        question: exercise.question,
+                        answer_type: exercise.answerType || exercise.answer_type,
+                        options: exercise.options,
+                        audio_url: exercise.audio_url,
+                        explanation: exercise.explanation,
+                        tandem_request: exercise.tandemRequest || exercise.tandem_request || false,
+                        tandem_details: exercise.tandemDetails || exercise.tandem_details,
+                        user_answers: exercise.userAnswers || exercise.user_answers || {},
+                        user_open_answers: exercise.userOpenAnswers || exercise.user_open_answers || {},
+                        corrections: exercise.corrections || []
+                    };
+
+                    const { error } = await supabase
+                        .from('exercises')
+                        .upsert(supabaseExercise, {
+                            onConflict: 'id'
+                        });
+                    
+                    if (error) throw error;
+                }
+                console.log('✅ Esercizi salvati su Supabase');
+            } catch (error) {
+                console.error('❌ Errore salvataggio esercizi su Supabase:', error);
+            }
+        }
+
+        async function saveEventsToSupabase() {
+            // Salva sempre in localStorage per backup
+            localStorage.setItem('superpractice_events', JSON.stringify(window.events));
+            
+            if (!supabase) {
+                console.log('Supabase non disponibile, salvo solo in localStorage');
+                return;
+            }
+
+            try {
+                for (const event of window.events) {
+                    const supabaseEvent = {
+                        id: event.id,
+                        created_at: event.created_at || event.createdAt || new Date().toISOString(),
+                        title: event.title,
+                        date: event.date,
+                        location_type: event.locationType || event.location_type,
+                        location: event.location,
+                        city: event.city,
+                        address: event.address,
+                        language: event.language,
+                        description: event.description,
+                        participants: event.participants || []
+                    };
+
+                    const { error } = await supabase
+                        .from('events')
+                        .upsert(supabaseEvent, {
+                            onConflict: 'id'
+                        });
+                    
+                    if (error) throw error;
+                }
+                console.log('✅ Eventi salvati su Supabase');
+            } catch (error) {
+                console.error('❌ Errore salvataggio eventi su Supabase:', error);
+            }
+        }
+
+        function saveExercises() {
+            saveExercisesToSupabase();
+        }
+
+        function saveEvents() {
+            saveEventsToSupabase();
+        }
+
+        // Audio upload functions
+        function initializeAudioUpload() {
+            const audioUpload = document.getElementById('audio-upload');
+            const audioPreview = document.getElementById('audio-preview');
+            const audioPlayer = document.getElementById('audio-player');
+            const audioFilename = document.getElementById('audio-filename');
+            
+            audioUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    currentAudioFile = file;
+                    
+                    // Mostra preview
+                    audioPreview.style.display = 'flex';
+                    
+                    // Imposta nome file
+                    audioFilename.textContent = file.name;
+                    
+                    // Crea URL locale per preview
+                    const localUrl = URL.createObjectURL(file);
+                    audioPlayer.src = localUrl;
+                    
+                    // Limita nome file se troppo lungo
+                    if (file.name.length > 30) {
+                        audioFilename.textContent = file.name.substring(0, 30) + '...';
+                    }
+                }
+            });
+        }
+
+        function removeAudio() {
+            currentAudioFile = null;
+            document.getElementById('audio-upload').value = '';
+            document.getElementById('audio-preview').style.display = 'none';
+            document.getElementById('audio-filename').textContent = '';
+            document.getElementById('audio-player').src = '';
+        }
+
+        async function uploadAudioFile(file) {
+            if (!supabase) {
+                console.log('Supabase not available, skipping audio upload');
+                return null;
+            }
+
+            // Verifica dimensioni file (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size too large. Maximum 10MB allowed.');
+                return null;
+            }
+
+            // Verifica tipo file
+            const validTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a'];
+            if (!validTypes.includes(file.type)) {
+                alert('Invalid audio format. Please use MP3, WAV, OGG, or M4A.');
+                return null;
+            }
+
+            try {
+                // Crea un nome file unico
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                
+                // Upload file su Supabase Storage
+                const { data, error } = await supabase.storage
+                    .from('exercises')
+                    .upload(`audio/${fileName}`, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+
+                if (error) throw error;
+
+                // Ottieni URL pubblico
+                const { data: urlData } = supabase.storage
+                    .from('exercises')
+                    .getPublicUrl(`audio/${fileName}`);
+
+                console.log('✅ Audio uploaded successfully:', urlData.publicUrl);
+                return urlData.publicUrl;
+                
+            } catch (error) {
+                console.error('❌ Error uploading audio:', error);
+                return null;
+            }
+        }
+
+        // Navigation
+        function initializeNavigation() {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.section');
+            
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById(targetSection).classList.add('active');
+                    
+                    if (targetSection === 'practice-native') {
+                        loadNativeExercises();
+                    } else if (targetSection === 'events-exchanges') {
+                        loadEvents();
+                    }
+                });
+            });
+        }
+
+        // Option management
+        function addOption() {
+            optionCounter++;
+            const optionsContainer = document.getElementById('options-container');
+            const optionItem = document.createElement('div');
+            optionItem.className = 'option-item';
+            optionItem.innerHTML = `
+                <input type="text" class="option-input" placeholder="Option ${optionCounter}" required>
+                <button type="button" class="btn-delete" onclick="removeOption(this)">Delete</button>
+            `;
+            optionsContainer.appendChild(optionItem);
+            
+            updateCorrectOptionDropdown();
+        }
+
+        function removeOption(button) {
+            const optionItem = button.parentElement;
+            if (document.querySelectorAll('.option-item').length > 1) {
+                optionItem.remove();
+                optionCounter--;
+                updateCorrectOptionDropdown();
+            } else {
+                alert('At least one option is required!');
+            }
+        }
+
+        function updateCorrectOptionDropdown() {
+            const select = document.getElementById('correct-option');
+            select.innerHTML = '';
+            
+            const options = document.querySelectorAll('.option-input');
+            options.forEach((option, index) => {
+                const optionElement = document.createElement('option');
+                optionElement.value = index + 1;
+                optionElement.textContent = `Option ${index + 1}`;
+                select.appendChild(optionElement);
+            });
+        }
+
+        // Exercise publishing
+        async function publishExercise() {
+            const name = document.getElementById('creator-name').value.trim();
+            const language = document.getElementById('exercise-language').value;
+            const topic = document.getElementById('exercise-topic').value.trim();
+            const correctionType = document.getElementById('correction-type').value;
+            const question = document.getElementById('question').value.trim();
+            const explanation = document.getElementById('explanation').value.trim();
+            const answerType = document.getElementById('answer-type').value;
+            const tandemRequest = document.getElementById('tandem-request').checked;
+            const tandemLanguages = document.getElementById('tandem-languages').value;
+            const tandemSchedule = document.getElementById('tandem-schedule').value;
+            
+            let options = [];
+            let correctOptionIndex = -1;
+            
+            if (answerType === 'multiple') {
+                const optionInputs = document.querySelectorAll('.option-input');
+                options = Array.from(optionInputs).map(input => input.value.trim());
+                correctOptionIndex = parseInt(document.getElementById('correct-option').value) - 1;
+                
+                if (options.length < 2) {
+                    alert('Add at least 2 options!');
+                    return;
+                }
+            }
+            
+            // Validation
+            if (!name || !language || !topic || !question) {
+                alert('Please fill all required fields!');
+                return;
+            }
+            
+            // Upload audio se presente
+            let uploadedAudioUrl = null;
+            if (currentAudioFile) {
+                try {
+                    uploadedAudioUrl = await uploadAudioFile(currentAudioFile);
+                    if (!uploadedAudioUrl) {
+                        alert('Error uploading audio file. Please try again.');
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Audio upload error:', error);
+                    alert('Error uploading audio file. Please try again.');
+                    return;
+                }
+            }
+            
+            // Add topic to filters
+            topics.add(topic);
+            tutors.add(name);
+            updateFilters();
+            
+            const exercise = {
+                id: Date.now(),
+                creator: name,
+                language,
+                topic,
+                correction_type: correctionType,
+                question,
+                answer_type: answerType,
+                options: answerType === 'multiple' ? options.map((text, index) => ({
+                    text,
+                    correct: index === correctOptionIndex
+                })) : [],
+                explanation,
+                audio_url: uploadedAudioUrl,
+                created_at: new Date().toISOString(),
+                user_answers: {},
+                user_open_answers: {},
+                tandem_request: tandemRequest,
+                tandem_details: tandemRequest ? {
+                    languages: tandemLanguages,
+                    schedule: tandemSchedule
+                } : null,
+                corrections: []
+            };
+            
+            window.exercises.unshift(exercise);
+            saveExercises();
+            loadStormExercises();
+            loadNativeExercises();
+            resetExerciseForm();
+            
+            alert('Exercise published successfully!');
+        }
+
+        function resetExerciseForm() {
+            document.getElementById('exercise-form').reset();
+            document.getElementById('options-container').innerHTML = `
+                <div class="option-item">
+                    <input type="text" class="option-input" placeholder="Option 1" required>
+                    <button type="button" class="btn-delete" onclick="removeOption(this)">Delete</button>
+                </div>
+                <div class="option-item">
+                    <input type="text" class="option-input" placeholder="Option 2" required>
+                    <button type="button" class="btn-delete" onclick="removeOption(this)">Delete</button>
+                </div>
+            `;
+            document.getElementById('tandem-details').classList.add('hidden');
+            document.getElementById('multiple-choice-section').classList.remove('hidden');
+            document.getElementById('open-answer-section').classList.add('hidden');
+            document.getElementById('correction-type').disabled = false;
+            
+            // Resetta anche l'audio
+            removeAudio();
+            
+            optionCounter = 2;
+            updateCorrectOptionDropdown();
+        }
+
+        // Storm exercises (auto-correction)
+        function loadStormExercises() {
+            const stormList = document.getElementById('storm-list');
+            const stormCount = document.getElementById('storm-count');
+            
+            // Filter only auto-correction exercises
+            let stormExercises = window.exercises.filter(ex => ex.correction_type === 'auto');
+            
+            // Apply additional filters
+            const languageFilter = document.getElementById('filter-language').value;
+            const topicFilter = document.getElementById('filter-topic').value;
+            const tutorFilter = document.getElementById('filter-tutor').value;
+            
+            if (languageFilter) {
+                stormExercises = stormExercises.filter(ex => ex.language === languageFilter);
+            }
+            
+            if (topicFilter) {
+                stormExercises = stormExercises.filter(ex => ex.topic === topicFilter);
+            }
+            
+            if (tutorFilter) {
+                stormExercises = stormExercises.filter(ex => ex.creator === tutorFilter);
+            }
+            
+            if (stormExercises.length === 0) {
+                stormList.innerHTML = '<p>No auto-correction exercises found with selected filters.</p>';
+                stormCount.textContent = '0 exercises';
+                return;
+            }
+            
+            stormCount.textContent = `${stormExercises.length} exercises`;
+            
+            // Show current exercise
+            const currentExercise = stormExercises[currentExerciseIndex];
+            if (!currentExercise) {
+                stormList.innerHTML = '<p>No exercises available.</p>';
+                return;
+            }
+            
+            const userAnswer = currentExercise.user_answers?.[currentUser];
+            const showResults = userAnswer !== undefined;
+            const correctOptionIndex = currentExercise.options.findIndex(opt => opt.correct);
+            const isCorrect = userAnswer === correctOptionIndex;
+            
+            stormList.innerHTML = `
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <div class="exercise-question">${currentExercise.question}</div>
+                        ${currentExercise.tandem_request ? '<span class="tandem-badge">Tandem Available</span>' : ''}
+                    </div>
+                    
+                    ${currentExercise.audio_url ? `
+                        <div class="exercise-audio">
+                            <div class="audio-label">🎧 Listen to the audio:</div>
+                            <audio controls class="audio-player" style="width: 100%; max-width: 400px;">
+                                <source src="${currentExercise.audio_url}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <small class="audio-note">Listen carefully before answering</small>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="exercise-meta">
+                        <span class="exercise-tag">${currentExercise.language}</span>
+                        <span class="exercise-tag">${currentExercise.topic}</span>
+                        <span class="exercise-tag">By: ${currentExercise.creator}</span>
+                    </div>
+                    
+                    ${currentExercise.tandem_request ? `
+                        <div class="tandem-request">
+                            <strong>🤝 Tandem Practice Available</strong>
+                            <p>Creator is available for tandem practice in: ${currentExercise.tandem_details.languages}</p>
+                            <p>Preferred schedule: ${currentExercise.tandem_details.schedule}</p>
+                            <button class="next-exercise-btn" onclick="requestTandem(${currentExercise.id})">
+                                Request Tandem Session
+                            </button>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="exercise-options">
+                        ${currentExercise.options.map((option, index) => {
+                            let optionClass = 'option-item-user';
+                            let feedback = '';
+                            
+                            if (showResults) {
+                                if (option.correct) {
+                                    optionClass += ' correct';
+                                    feedback = '<div class="option-feedback">✓ Correct</div>';
+                                } else if (userAnswer === index) {
+                                    optionClass += ' incorrect';
+                                    feedback = '<div class="option-feedback">✗ Incorrect</div>';
+                                }
+                            }
+                            
+                            return `
+                                <div class="${optionClass}" onclick="selectStormOption(${currentExercise.id}, ${index})">
+                                    <div class="option-text">${String.fromCharCode(65 + index)}) ${option.text}</div>
+                                    ${feedback}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    ${showResults ? `
+                        <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                            ${isCorrect ? '🎉 Correct answer!' : '❌ Incorrect answer. Try again!'}
+                        </div>
+                        
+                        ${isCorrect ? `
+                            <div class="exercise-explanation">
+                                <strong>Explanation:</strong> ${currentExercise.explanation}
+                            </div>
+                            <button class="next-exercise-btn" onclick="nextStormExercise()">
+                                Next Exercise →
+                            </button>
+                        ` : ''}
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function selectStormOption(exerciseId, optionIndex) {
+            const exercise = window.exercises.find(ex => ex.id === exerciseId);
+            if (!exercise) return;
+            
+            // Save user answer
+            if (!exercise.user_answers) {
+                exercise.user_answers = {};
+            }
+            exercise.user_answers[currentUser] = optionIndex;
+            
+            saveExercises();
+            loadStormExercises();
+        }
+
+        function nextStormExercise() {
+            const languageFilter = document.getElementById('filter-language').value;
+            const topicFilter = document.getElementById('filter-topic').value;
+            const tutorFilter = document.getElementById('filter-tutor').value;
+            
+            let stormExercises = window.exercises.filter(ex => ex.correction_type === 'auto');
+            
+            if (languageFilter) {
+                stormExercises = stormExercises.filter(ex => ex.language === languageFilter);
+            }
+            
+            if (topicFilter) {
+                stormExercises = stormExercises.filter(ex => ex.topic === topicFilter);
+            }
+            
+            if (tutorFilter) {
+                stormExercises = stormExercises.filter(ex => ex.creator === tutorFilter);
+            }
+            
+            currentExerciseIndex = (currentExerciseIndex + 1) % stormExercises.length;
+            loadStormExercises();
+        }
+
+        // Practice with Native
+        function loadNativeExercises() {
+            const nativeList = document.getElementById('native-list');
+            const nativeCount = document.getElementById('native-count');
+            
+            // Filter only native correction exercises
+            let nativeExercises = window.exercises.filter(ex => ex.correction_type === 'native');
+            
+            // Apply additional filters
+            const languageFilter = document.getElementById('filter-language').value;
+            const topicFilter = document.getElementById('filter-topic').value;
+            const tutorFilter = document.getElementById('filter-tutor').value;
+            
+            if (languageFilter) {
+                nativeExercises = nativeExercises.filter(ex => ex.language === languageFilter);
+            }
+            
+            if (topicFilter) {
+                nativeExercises = nativeExercises.filter(ex => ex.topic === topicFilter);
+            }
+            
+            if (tutorFilter) {
+                nativeExercises = nativeExercises.filter(ex => ex.creator === tutorFilter);
+            }
+            
+            if (nativeExercises.length === 0) {
+                nativeList.innerHTML = '<p>No native correction exercises found with selected filters.</p>';
+                nativeCount.textContent = '0 exercises';
+                return;
+            }
+            
+            nativeCount.textContent = `${nativeExercises.length} exercises`;
+            
+            nativeList.innerHTML = nativeExercises.map(exercise => {
+                const userAnswer = exercise.user_answers?.[currentUser];
+                const userOpenAnswer = exercise.user_open_answers?.[currentUser];
+                const hasAnswered = userAnswer !== undefined || userOpenAnswer !== undefined;
+                const userCorrections = exercise.corrections ? exercise.corrections.filter(c => c.userId === currentUser) : [];
+                
+                return `
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <div class="exercise-question">${exercise.question}</div>
+                            <span class="premium-badge">Native Correction</span>
+                            ${exercise.tandem_request ? '<span class="tandem-badge">Tandem Available</span>' : ''}
+                        </div>
+                        
+                        ${exercise.audio_url ? `
+                            <div class="exercise-audio">
+                                <div class="audio-label">🎧 Listen to the audio:</div>
+                                <audio controls class="audio-player" style="width: 100%; max-width: 400px;">
+                                    <source src="${exercise.audio_url}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <small class="audio-note">Listen carefully before answering</small>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="exercise-meta">
+                            <span class="exercise-tag">${exercise.language}</span>
+                            <span class="exercise-tag">${exercise.topic}</span>
+                            <span class="exercise-tag">By: ${exercise.creator}</span>
+                        </div>
+                        
+                        ${!hasAnswered ? `
+                            ${exercise.answer_type === 'multiple' ? `
+                                <div class="exercise-options">
+                                    ${exercise.options.map((option, index) => `
+                                        <div class="option-item-user" onclick="selectNativeOption(${exercise.id}, ${index})">
+                                            <div class="option-text">${String.fromCharCode(65 + index)}) ${option.text}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : `
+                                <div class="open-answer-section">
+                                    <h4>✍️ Write Your Answer</h4>
+                                    <textarea id="open-answer-${exercise.id}" placeholder="Write your answer here..." rows="4" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;"></textarea>
+                                </div>
+                            `}
+                            
+                            <div class="form-actions">
+                                <button class="next-exercise-btn" onclick="submitNativeAnswer(${exercise.id})">
+                                    Submit Answer for Native Correction
+                                </button>
+                            </div>
+                        ` : `
+                            <div class="correction-item">
+                                <strong>Your Answer:</strong>
+                                <p>${userOpenAnswer || (exercise.options && exercise.options[userAnswer] ? exercise.options[userAnswer].text : '')}</p>
+                            </div>
+                            
+                            ${userCorrections.length > 0 ? `
+                                <div class="exercise-explanation">
+                                    <strong>Corrections:</strong>
+                                    ${userCorrections.map(correction => `
+                                        <div style="margin-top: 10px; padding: 10px; background: #e8f5e8; border-radius: 5px;">
+                                            <strong>${correction.nativeSpeaker}:</strong> ${correction.feedback}
+                                            <div style="font-size: 0.8em; color: #6c757d; margin-top: 5px;">
+                                                ${new Date(correction.correctedAt).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : `
+                                <div class="correction-item">
+                                    <p><em>Your answer is waiting for native speaker correction.</em></p>
+                                </div>
+                            `}
+                            
+                            <!-- Chiunque può correggere -->
+                            <div class="correction-form">
+                                <h4>✏️ Take notes here! </h4>
+                                <div class="form-group">
+                                    <label></label>
+                                    <textarea id="correction-${exercise.id}" placeholder="Only you will see the notes you take here..." rows="4"></textarea>
+                                </div>
+                                <button class="next-exercise-btn" onclick="submitCorrection(${exercise.id})">
+                                    Submit Correction
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectNativeOption(exerciseId, optionIndex) {
+            const exercise = window.exercises.find(ex => ex.id === exerciseId);
+            if (!exercise) return;
+            
+            // Save user answer
+            if (!exercise.user_answers) {
+                exercise.user_answers = {};
+            }
+            exercise.user_answers[currentUser] = optionIndex;
+            
+            saveExercises();
+            loadNativeExercises();
+        }
+
+        function submitNativeAnswer(exerciseId) {
+            const exercise = window.exercises.find(ex => ex.id === exerciseId);
+            if (!exercise) return;
+            
+            let userAnswer, userAnswerText;
+            
+            if (exercise.answer_type === 'multiple') {
+                userAnswer = exercise.user_answers?.[currentUser];
+                if (userAnswer === undefined) {
+                    alert('Please select an answer first!');
+                    return;
+                }
+                userAnswerText = exercise.options[userAnswer].text;
+            } else {
+                const openAnswerInput = document.getElementById(`open-answer-${exerciseId}`);
+                userAnswerText = openAnswerInput.value.trim();
+                if (!userAnswerText) {
+                    alert('Please write your answer first!');
+                    return;
+                }
+                if (!exercise.user_open_answers) {
+                    exercise.user_open_answers = {};
+                }
+                exercise.user_open_answers[currentUser] = userAnswerText;
+            }
+            
+            saveExercises();
+            loadNativeExercises();
+            
+            alert('Your answer has been submitted for native speaker correction!');
+        }
+
+        function submitCorrection(exerciseId) {
+            const exercise = window.exercises.find(ex => ex.id === exerciseId);
+            if (!exercise) return;
+            
+            const correctionText = document.getElementById(`correction-${exerciseId}`).value.trim();
+            if (!correctionText) {
+                alert('Please provide correction feedback!');
+                return;
+            }
+            
+            // Update exercise with correction
+            if (!exercise.corrections) {
+                exercise.corrections = [];
+            }
+            exercise.corrections.push({
+                nativeSpeaker: currentUser,
+                userId: currentUser,
+                feedback: correctionText,
+                correctedAt: new Date().toISOString()
+            });
+            
+            saveExercises();
+            loadNativeExercises();
+            
+            alert('Correction submitted successfully!');
+        }
+
+        function requestTandem(exerciseId) {
+            const exercise = window.exercises.find(ex => ex.id === exerciseId);
+            if (exercise && exercise.tandem_request) {
+                alert(`Tandem session requested with ${exercise.creator}! They will be notified of your interest in practicing ${exercise.topic}.`);
+            }
+        }
+
+        // Events management
+        function showEventForm() {
+            document.getElementById('event-form').classList.remove('hidden');
+        }
+
+        function hideEventForm() {
+            document.getElementById('event-form').classList.add('hidden');
+        }
+
+        function saveEvent() {
+            const title = document.getElementById('event-title').value.trim();
+            const date = document.getElementById('event-date').value;
+            const time = document.getElementById('event-time').value;
+            const locationType = document.getElementById('location-type').value;
+            const location = document.getElementById('event-location').value.trim();
+            const city = document.getElementById('event-city').value.trim();
+            const address = document.getElementById('event-address').value.trim();
+            const language = document.getElementById('event-language').value;
+            const description = document.getElementById('event-description').value.trim();
+            
+            if (!title || !date || !location || !city) {
+                alert('Please fill all required fields!');
+                return;
+            }
+            
+            const event = {
+                id: Date.now(),
+                title,
+                date: `${date} ${time}`,
+                location_type: locationType,
+                location,
+                city,
+                address,
+                language,
+                description,
+                created_at: new Date().toISOString(),
+                participants: [currentUser]
+            };
+            
+            window.events.unshift(event);
+            saveEvents();
+            loadEvents();
+            hideEventForm();
+            
+            // Reset form
+            document.getElementById('event-title').value = '';
+            document.getElementById('event-date').value = '';
+            document.getElementById('event-time').value = '';
+            document.getElementById('event-location').value = '';
+            document.getElementById('event-city').value = '';
+            document.getElementById('event-address').value = '';
+            document.getElementById('event-description').value = '';
+            
+            alert('Event created successfully!');
+        }
+
+        function loadEvents() {
+            const eventsList = document.getElementById('events-list');
+            const cityFilter = document.getElementById('filter-city').value.toLowerCase();
+            
+            let filteredEvents = window.events;
+            
+            if (cityFilter) {
+                filteredEvents = filteredEvents.filter(event => 
+                    event.city.toLowerCase().includes(cityFilter)
+                );
+            }
+            
+            if (filteredEvents.length === 0) {
+                eventsList.innerHTML = '<p>No events found matching your search.</p>';
+                return;
+            }
+            
+            eventsList.innerHTML = filteredEvents.map(event => `
+                <div class="event-card">
+                    <div class="event-title">${event.title}</div>
+                    <div class="event-date">📅 ${formatDateTime(event.date)}</div>
+                    <div class="event-location">
+                        📍 ${event.location} 
+                        <span class="location-badge">${event.location_type}</span>
+                    </div>
+                    <div class="event-location">🏙️ ${event.city} ${event.address ? `- ${event.address}` : ''}</div>
+                    <div class="exercise-tag">${event.language}</div>
+                    <div class="event-description">${event.description}</div>
+                    <div class="form-actions">
+                        <button class="next-exercise-btn" onclick="joinEvent(${event.id})">
+                            Join Event
+                        </button>
+                        <span style="margin-left: 10px; color: #6c757d;">
+                            ${event.participants.length} participants
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterEvents() {
+            loadEvents();
+        }
+
+        function joinEvent(eventId) {
+            const event = window.events.find(ev => ev.id === eventId);
+            if (event && !event.participants.includes(currentUser)) {
+                event.participants.push(currentUser);
+                saveEvents();
+                loadEvents();
+                alert('You have joined the event!');
+            }
+        }
+
+        // Filters
+        function updateFilters() {
+            const topicSelect = document.getElementById('filter-topic');
+            const tutorSelect = document.getElementById('filter-tutor');
+            
+            topicSelect.innerHTML = '<option value="">All topics</option>';
+            topics.forEach(topic => {
+                const option = document.createElement('option');
+                option.value = topic;
+                option.textContent = topic;
+                topicSelect.appendChild(option);
+            });
+            
+            tutorSelect.innerHTML = '<option value="">All tutors</option>';
+            tutors.forEach(tutor => {
+                const option = document.createElement('option');
+                option.value = tutor;
+                option.textContent = tutor;
+                tutorSelect.appendChild(option);
+            });
+        }
+
+        function filterContent() {
+            currentExerciseIndex = 0;
+            loadStormExercises();
+            loadNativeExercises();
+        }
+
+        // Utility functions
+        function formatDateTime(dateTimeString) {
+            try {
+                const date = new Date(dateTimeString);
+                return date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return dateTimeString;
+            }
+        }
+
+        // Sample data initialization
+        function initializeSampleData() {
+            if (window.exercises.length === 0) {
+                window.exercises = [
+                    {
+                        id: 1,
+                        creator: "Maria Bianchi",
+                        language: "english",
+                        topic: "Basic Grammar",
+                        correction_type: "auto",
+                        question: "What is the correct verb form for 'he' in present simple?",
+                        answer_type: "multiple",
+                        options: [
+                            { text: "He go to school", correct: false },
+                            { text: "He goes to school", correct: true },
+                            { text: "He going to school", correct: false }
+                        ],
+                        explanation: "For third person singular (he, she, it) in present simple, we add -s to the verb.",
+                        created_at: new Date().toISOString(),
+                        user_answers: {},
+                        tandem_request: true,
+                        tandem_details: {
+                            languages: "English, Italian",
+                            schedule: "Weekends"
+                        },
+                        corrections: []
+                    },
+                    {
+                        id: 2,
+                        creator: "John Smith",
+                        language: "spanish",
+                        topic: "Vocabulary",
+                        correction_type: "native",
+                        question: "How would you describe your favorite place in Spanish?",
+                        answer_type: "open",
+                        explanation: "This is a good answer because it uses descriptive vocabulary and explains why the place is favorite.",
+                        created_at: new Date().toISOString(),
+                        user_answers: {},
+                        user_open_answers: {},
+                        tandem_request: false,
+                        corrections: []
+                    },
+                    {
+                        id: 3,
+                        creator: "Audio Teacher",
+                        language: "english",
+                        topic: "Pronunciation",
+                        correction_type: "auto",
+                        question: "Listen and select the correct pronunciation:",
+                        answer_type: "multiple",
+                        options: [
+                            { text: "Pronounced as /θɪŋk/", correct: true },
+                            { text: "Pronounced as /tɪŋk/", correct: false },
+                            { text: "Pronounced as /sɪŋk/", correct: false }
+                        ],
+                        explanation: "The correct pronunciation is /θɪŋk/ with the voiceless dental fricative 'th' sound.",
+                        audio_url: "https://sfvhnggywsdekmarrxlt.supabase.co/storage/v1/object/public/exercises/audio/sample_pronunciation.mp3",
+                        created_at: new Date().toISOString(),
+                        user_answers: {},
+                        tandem_request: false,
+                        corrections: []
+                    }
+                ];
+                saveExercises();
+            }
+            
+            if (window.events.length === 0) {
+                window.events = [
+                    {
+                        id: 1,
+                        title: "English Conversation - Intermediate Level",
+                        date: "2024-12-20 18:00",
+                        location_type: "cafe",
+                        location: "Bookworm Cafe",
+                        city: "Rome",
+                        address: "Via del Corso 123",
+                        language: "english",
+                        description: "An informal meeting to practice spoken English. Bring your enthusiasm and willingness to converse!",
+                        created_at: new Date().toISOString(),
+                        participants: []
+                    },
+                    {
+                        id: 2,
+                        title: "Spanish Language Exchange",
+                        date: "2024-12-22 17:00",
+                        location_type: "park",
+                        location: "Central Park",
+                        city: "Milan",
+                        address: "Piazza Duomo",
+                        language: "spanish",
+                        description: "Casual Spanish practice for all levels. Let's speak Spanish while enjoying the park!",
+                        created_at: new Date().toISOString(),
+                        participants: []
+                    }
+                ];
+                saveEvents();
+            }
+            
+            // Update filters
+            updateFiltersFromData();
+            updateFilters();
+        }
+    </script>
+</body>
+</html>
