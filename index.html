@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperPratika - Practice anywhere, as much as possible</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
@@ -22,7 +23,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             min-height: 100vh;
@@ -95,10 +96,11 @@
         }
 
         .sidebar {
-            width: 250px;
+            width: 280px;
             background: linear-gradient(180deg, #1a2a3a 0%, #2c3e50 100%);
             border-right: 1px solid #34495e;
             padding: 30px 0;
+            flex-shrink: 0;
         }
 
         .nav-section {
@@ -155,6 +157,7 @@
             flex: 1;
             padding: 30px;
             background: #fafbfc;
+            overflow-y: auto;
         }
 
         .section {
@@ -200,19 +203,26 @@
             min-height: 600px;
         }
 
-        .exercise-form, .event-form {
-            max-width: 800px;
+        .exercise-form, .event-form, .word-form {
+            max-width: 1000px;
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             border: 1px solid #e9ecef;
+            margin-bottom: 30px;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
         }
 
         .form-group {
@@ -324,7 +334,7 @@
             border-top: 2px solid #dee2e6;
         }
 
-        .btn-publish, .btn-create-event {
+        .btn-publish, .btn-create-event, .btn-save {
             background: linear-gradient(135deg, #27ae60, #219a52);
             color: white;
             border: none;
@@ -339,7 +349,7 @@
             gap: 8px;
         }
 
-        .btn-publish:hover, .btn-create-event:hover {
+        .btn-publish:hover, .btn-create-event:hover, .btn-save:hover {
             background: linear-gradient(135deg, #219a52, #27ae60);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
@@ -349,11 +359,13 @@
             display: flex;
             gap: 15px;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
 
         .exercises-list,
         .corrections-list,
-        .events-list {
+        .events-list,
+        .words-grid {
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -361,22 +373,38 @@
 
         .exercise-card,
         .correction-card,
-        .event-card {
+        .event-card,
+        .word-card {
             background: white;
             border: 2px solid #e9ecef;
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .exercise-card:hover,
         .correction-card:hover,
-        .event-card:hover {
+        .event-card:hover,
+        .word-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
             border-color: #3498db;
         }
+
+        .word-card {
+            border-left: 5px solid #3498db;
+        }
+
+        .word-card.lang-en { border-left-color: #3498db; }
+        .word-card.lang-fr { border-left-color: #e74c3c; }
+        .word-card.lang-es { border-left-color: #f39c12; }
+        .word-card.lang-de { border-left-color: #2c3e50; }
+        .word-card.lang-it { border-left-color: #2ecc71; }
+        .word-card.lang-pt { border-left-color: #9b59b6; }
+        .word-card.lang-ja { border-left-color: #1abc9c; }
+        .word-card.lang-other { border-left-color: #7f8c8d; }
 
         .exercise-header {
             display: flex;
@@ -409,6 +437,73 @@
             font-weight: 500;
             color: #495057;
         }
+
+        .word-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .word-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        .word-translation {
+            color: #e74c3c;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .word-language {
+            background: #3498db;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .card-section {
+            margin-bottom: 15px;
+        }
+
+        .section-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .card-category {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: white;
+        }
+
+        .cat-1 { background-color: #3498db; }
+        .cat-2 { background-color: #2ecc71; }
+        .cat-3 { background-color: #9b59b6; }
+        .cat-4 { background-color: #f39c12; }
+        .cat-5 { background-color: #e74c3c; }
+        .cat-6 { background-color: #1abc9c; }
+        .cat-7 { background-color: #d35400; }
+        .cat-8 { background-color: #34495e; }
 
         .exercise-options {
             margin: 15px 0;
@@ -607,7 +702,7 @@
             display: none !important;
         }
 
-        /* Nuovi stili per audio */
+        /* Audio styles */
         .audio-section {
             background: #f8f9fa;
             padding: 20px;
@@ -704,6 +799,296 @@
             transition: width 0.3s ease;
         }
 
+        /* Image upload for vocabulary */
+        .image-upload-container {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .image-upload-container:hover {
+            border-color: #3498db;
+            background-color: #f8f9fa;
+        }
+
+        .image-upload-container.drag-over {
+            border-color: #2ecc71;
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .image-preview.show {
+            display: block;
+        }
+
+        .remove-image {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* Categories */
+        .categories-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .category-tag {
+            background: #e0e0e0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .category-tag:hover {
+            transform: scale(1.05);
+        }
+
+        .category-tag.selected {
+            color: white;
+        }
+
+        .category-tag .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Word image */
+        .word-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .word-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* Modal for image view */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Word cards grid */
+        .words-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .words-grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Delete button */
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        /* Filter controls */
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        /* Footer buttons */
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-warning:hover {
+            background: #d68910;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        /* Required field indicator */
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
         @media (max-width: 768px) {
             .content {
                 flex-direction: column;
@@ -776,11 +1161,18 @@
             .event-filters {
                 flex-direction: column;
             }
+            
+            .words-grid-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
-<script src='https://widget.superchat.de/snippet.js?applicationKey=WCeMW3w0Z529QONVBjzGk7AJy8' referrerpolicy='no-referrer-when-downgrade'></script>
     <div class="container">
         <header class="header">
             <div class="header-content">
@@ -836,6 +1228,10 @@
                             <span class="nav-icon">✨</span>
                             <span class="nav-text">Create Exercise</span>
                         </button>
+                        <button class="nav-btn" data-section="vocabulary">
+                            <span class="nav-icon">📚</span>
+                            <span class="nav-text">Vocabulary Space</span>
+                        </button>
                     </div>
 
                     <div class="nav-section">
@@ -849,6 +1245,7 @@
             </aside>
 
             <main class="main">
+                <!-- Storm Section -->
                 <section id="storm" class="section active">
                     <div class="section-header">
                         <h2>Storm - Quick Practice</h2>
@@ -861,6 +1258,7 @@
                     </div>
                 </section>
 
+                <!-- Practice with Native Section -->
                 <section id="practice-native" class="section">
                     <div class="section-header">
                         <h2>Practice with a Native</h2>
@@ -873,6 +1271,7 @@
                     </div>
                 </section>
 
+                <!-- Create Exercise Section -->
                 <section id="create-exercise" class="section">
                     <h2>Create an Exercise</h2>
                     <p class="section-subtitle">Anyone can create and share exercises</p>
@@ -1018,6 +1417,173 @@
                     </form>
                 </section>
 
+                <!-- Vocabulary Space Section -->
+                <section id="vocabulary" class="section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-language"></i> Vocabulary Space</h2>
+                        <div class="exercises-count" id="vocab-count">0 words</div>
+                    </div>
+                    
+                    <form id="word-form" class="word-form">
+                        <h3><i class="fas fa-plus-circle"></i> Add New Word</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="word-input" class="required">Word</label>
+                                <input type="text" id="word-input" placeholder="Ex: Saudade" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="translation-input" class="required">Translation</label>
+                                <input type="text" id="translation-input" placeholder="Ex: Nostalgic longing" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="word-language">Language</label>
+                                <select id="word-language">
+                                    <option value="">Choose language...</option>
+                                    <option value="en">English</option>
+                                    <option value="fr">French</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="de">German</option>
+                                    <option value="it">Italian</option>
+                                    <option value="pt">Portuguese</option>
+                                    <option value="ja">Japanese</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="word-categories">Categories</label>
+                            <div class="categories-section" id="word-categories-container">
+                                <!-- Categories will be dynamically added here -->
+                            </div>
+                            <div class="form-row" style="margin-top: 10px;">
+                                <div class="form-group">
+                                    <input type="text" id="new-word-category" placeholder="Add new category...">
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" id="add-word-category-btn" class="btn btn-warning" style="width: auto; padding: 12px 15px;">
+                                        <i class="fas fa-plus"></i> Add Category
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="word-image">Associated Image</label>
+                            <div class="image-upload-container" id="word-image-upload-container">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #7f8c8d; margin-bottom: 10px;"></i>
+                                <p>Drag an image here or click to select</p>
+                                <p style="font-size: 0.8rem; color: #95a5a6;">Supported: JPG, PNG, GIF (max 2MB)</p>
+                                <input type="file" id="word-image-upload" accept="image/*" style="display: none;">
+                            </div>
+                            <img id="word-image-preview" class="image-preview" alt="Image preview">
+                            <button type="button" id="remove-word-image-btn" class="remove-image" style="display: none;">
+                                <i class="fas fa-trash"></i> Remove Image
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="definition-input">Definition / Notes</label>
+                            <textarea id="definition-input" placeholder="Explain the meaning, origin, cultural notes..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sentence-input">Example Sentence</label>
+                            <textarea id="sentence-input" placeholder="Create a sentence showing how to use this word"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="associations-input">Creative Associations</label>
+                            <textarea id="associations-input" placeholder="Images, related concepts, synonyms, mnemonics..."></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save">
+                                <i class="fas fa-save"></i> Save Word
+                            </button>
+                            
+                            <button type="button" id="word-example-btn" class="btn btn-secondary">
+                                <i class="fas fa-magic"></i> Load Example
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="filter-controls">
+                        <select id="filter-word-language" class="filter-select">
+                            <option value="">All languages</option>
+                            <option value="en">English</option>
+                            <option value="fr">French</option>
+                            <option value="es">Spanish</option>
+                            <option value="de">German</option>
+                            <option value="it">Italian</option>
+                            <option value="pt">Portuguese</option>
+                            <option value="ja">Japanese</option>
+                            <option value="other">Other</option>
+                        </select>
+                        
+                        <select id="filter-word-category" class="filter-select">
+                            <option value="">All categories</option>
+                            <!-- Categories will be dynamically added -->
+                        </select>
+                        
+                        <select id="sort-words-by" class="filter-select">
+                            <option value="date-desc">Most recent</option>
+                            <option value="date-asc">Oldest</option>
+                            <option value="word-asc">Word (A-Z)</option>
+                            <option value="word-desc">Word (Z-A)</option>
+                        </select>
+                        
+                        <button id="clear-word-filters" class="next-exercise-btn" style="width: auto; padding: 8px 15px;">
+                            <i class="fas fa-times"></i> Clear Filters
+                        </button>
+                    </div>
+
+                    <div class="words-grid-container" id="words-container">
+                        <!-- Words will be inserted here dynamically -->
+                        <div class="empty-state" id="words-empty-state">
+                            <i class="fas fa-book"></i>
+                            <h3>No words yet</h3>
+                            <p>Add your first word using the form above!</p>
+                        </div>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-vocab-words">0</div>
+                            <div class="stat-label">Total Words</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="today-vocab-words">0</div>
+                            <div class="stat-label">Added Today</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="vocab-categories-count">0</div>
+                            <div class="stat-label">Categories</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="vocab-images-count">0</div>
+                            <div class="stat-label">With Images</div>
+                        </div>
+                    </div>
+
+                    <div class="footer-buttons" style="margin-top: 30px;">
+                        <button id="export-vocab-btn" class="next-exercise-btn" style="width: auto; padding: 8px 15px;">
+                            <i class="fas fa-download"></i> Export Vocabulary
+                        </button>
+                        <button id="import-vocab-btn" class="btn-secondary" style="width: auto; padding: 8px 15px;">
+                            <i class="fas fa-upload"></i> Import Vocabulary
+                        </button>
+                        <button id="manage-vocab-categories-btn" class="btn-warning" style="width: auto; padding: 8px 15px;">
+                            <i class="fas fa-tags"></i> Manage Categories
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Events and Exchanges Section -->
                 <section id="events-exchanges" class="section">
                     <div class="section-header">
                         <h2>Events and Exchanges</h2>
@@ -1114,17 +1680,25 @@
                 </section>
             </main>
         </div>
+
+        <!-- Image Modal -->
+        <div class="modal" id="imageModal">
+            <div class="modal-content">
+                <button class="close-modal" id="closeModal">&times;</button>
+                <img id="modalImage" class="modal-image" alt="Enlarged image">
+            </div>
+        </div>
     </div>
 
     <script>
-        // CONFIGURAZIONE SUPABASE AGGIORNATA
-        const supabaseUrl = 'https://sfvhnggywsdekmarrxlt.supabase.co'
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmdmhuZ2d5d3NkZWttYXJyeGx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MTgyNDMsImV4cCI6MjA3OTk5NDI0M30.C0JHrInUNYdukmgxjWEBFkjLEL0BzcM2hTWBDkjvNNw'
+        // CONFIGURAZIONE SUPABASE
+        const SUPABASE_URL = 'https://sfvhnggywsdekmarrxlt.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmdmhuZ2d5d3NkZWttYXJyeGx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MTgyNDMsImV4cCI6MjA3OTk5NDI0M30.C0JHrInUNYdukmgxjWEBFkjLEL0BzcM2hTWBDkjvNNw';
         
-        // Crea il client Supabase
-        let supabase;
+        // Client Supabase
+        let supabaseClient;
         
-        // Application data
+        // Application data - ESERCIZI ORIGINALI
         window.exercises = [];
         window.events = [];
         let topics = new Set();
@@ -1132,9 +1706,36 @@
         let optionCounter = 2;
         let currentExerciseIndex = 0;
         
+        // Vocabulary data - NUOVA FUNZIONALITÀ
+        let words = JSON.parse(localStorage.getItem('superpractice_vocabulary')) || [];
+        let vocabCategories = JSON.parse(localStorage.getItem('superpractice_vocab_categories')) || [
+            { id: 1, name: 'Noun', color: '#3498db' },
+            { id: 2, name: 'Verb', color: '#2ecc71' },
+            { id: 3, name: 'Adjective', color: '#9b59b6' },
+            { id: 4, name: 'Adverb', color: '#f39c12' },
+            { id: 5, name: 'Expression', color: '#e74c3c' },
+            { id: 6, name: 'Technical', color: '#1abc9c' },
+            { id: 7, name: 'Slang', color: '#d35400' },
+            { id: 8, name: 'Formal', color: '#34495e' }
+        ];
+        
         // Audio management
         let currentAudioFile = null;
+        let currentWordImage = null;
+        let selectedWordCategories = [];
         
+        // Language names mapping
+        const languageNames = {
+            'en': 'English',
+            'fr': 'French',
+            'es': 'Spanish',
+            'de': 'German',
+            'it': 'Italian',
+            'pt': 'Portuguese',
+            'ja': 'Japanese',
+            'other': 'Other'
+        };
+
         // Genera un ID utente unico per ogni dispositivo
         let currentUser = localStorage.getItem('superpractice_user_id');
         if (!currentUser) {
@@ -1142,86 +1743,20 @@
             localStorage.setItem('superpractice_user_id', currentUser);
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Inizializza Supabase
-            try {
-                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-                console.log('✅ Supabase client inizializzato');
-            } catch (error) {
-                console.error('❌ Errore inizializzazione Supabase:', error);
-                supabase = null;
-            }
-            
-            await loadDataFromSupabase();
-            initializeNavigation();
-            initializeAudioUpload();
-            loadStormExercises();
-            loadNativeExercises();
-            loadEvents();
-            updateFilters();
-            
-            // Form handling
-            document.getElementById('exercise-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                publishExercise();
-            });
-            
-            // Tandem request toggle
-            document.getElementById('tandem-request').addEventListener('change', function() {
-                document.getElementById('tandem-details').classList.toggle('hidden', !this.checked);
-            });
-            
-            // Answer type toggle
-            document.getElementById('answer-type').addEventListener('change', function() {
-                const isMultipleChoice = this.value === 'multiple';
-                document.getElementById('multiple-choice-section').classList.toggle('hidden', !isMultipleChoice);
-                document.getElementById('open-answer-section').classList.toggle('hidden', isMultipleChoice);
-                
-                if (!isMultipleChoice) {
-                    document.getElementById('correction-type').value = 'native';
-                    document.getElementById('correction-type').disabled = true;
-                } else {
-                    document.getElementById('correction-type').disabled = false;
-                }
-            });
-            
-            // Correction type toggle
-            document.getElementById('correction-type').addEventListener('change', function() {
-                if (this.value === 'auto') {
-                    document.getElementById('answer-type').value = 'multiple';
-                    document.getElementById('multiple-choice-section').classList.remove('hidden');
-                    document.getElementById('open-answer-section').classList.add('hidden');
-                }
-            });
-            
-            // Filter handling
-            document.getElementById('filter-language').addEventListener('change', filterContent);
-            document.getElementById('filter-topic').addEventListener('change', filterContent);
-            document.getElementById('filter-tutor').addEventListener('change', filterContent);
-            document.getElementById('filter-city').addEventListener('input', filterEvents);
-            
-            // Carica dati di esempio se necessario
-            if (window.exercises.length === 0 && window.events.length === 0) {
-                initializeSampleData();
-            }
-        });
-
-        // FUNZIONI SUPABASE OTTIMIZZATE
+        // ========== FUNZIONI SUPABASE ORIGINALI ==========
         async function loadDataFromSupabase() {
-            // Prima prova a caricare da localStorage per velocità
             loadFromLocalStorage();
             
-            if (!supabase) {
-                console.log('Supabase non disponibile, uso localStorage');
+            if (!supabaseClient) {
+                console.log('Supabase not available, using localStorage');
                 return;
             }
 
             try {
-                console.log('🔄 Caricamento dati da Supabase...');
+                console.log('🔄 Loading data from Supabase...');
                 
-                // Carica esercizi
-                const { data: exercisesData, error: exercisesError } = await supabase
+                // Load exercises
+                const { data: exercisesData, error: exercisesError } = await supabaseClient
                     .from('exercises')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -1229,20 +1764,19 @@
                 if (!exercisesError && exercisesData) {
                     window.exercises = exercisesData.map(ex => ({
                         ...ex,
-                        // Converti i campi JSON se sono stringhe
                         options: typeof ex.options === 'string' ? JSON.parse(ex.options) : ex.options,
                         user_answers: typeof ex.user_answers === 'string' ? JSON.parse(ex.user_answers) : (ex.user_answers || {}),
                         user_open_answers: typeof ex.user_open_answers === 'string' ? JSON.parse(ex.user_open_answers) : (ex.user_open_answers || {}),
                         tandem_details: typeof ex.tandem_details === 'string' ? JSON.parse(ex.tandem_details) : (ex.tandem_details || null),
                         corrections: typeof ex.corrections === 'string' ? JSON.parse(ex.corrections) : (ex.corrections || [])
                     }));
-                    console.log(`✅ Caricati ${exercisesData.length} esercizi da Supabase`);
+                    console.log(`✅ Loaded ${exercisesData.length} exercises from Supabase`);
                 } else if (exercisesError) {
-                    console.error('Errore nel caricamento esercizi:', exercisesError);
+                    console.error('Error loading exercises:', exercisesError);
                 }
                 
-                // Carica eventi
-                const { data: eventsData, error: eventsError } = await supabase
+                // Load events
+                const { data: eventsData, error: eventsError } = await supabaseClient
                     .from('events')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -1252,28 +1786,31 @@
                         ...ev,
                         participants: typeof ev.participants === 'string' ? JSON.parse(ev.participants) : (ev.participants || [])
                     }));
-                    console.log(`✅ Caricati ${eventsData.length} eventi da Supabase`);
+                    console.log(`✅ Loaded ${eventsData.length} events from Supabase`);
                 } else if (eventsError) {
-                    console.error('Errore nel caricamento eventi:', eventsError);
+                    console.error('Error loading events:', eventsError);
                 }
                 
-                // Aggiorna filtri
                 updateFiltersFromData();
                 
             } catch (error) {
-                console.log('❌ Errore Supabase, uso localStorage:', error);
+                console.log('❌ Supabase error, using localStorage:', error);
             }
         }
 
         function loadFromLocalStorage() {
             const storedExercises = localStorage.getItem('superpractice_exercises');
             const storedEvents = localStorage.getItem('superpractice_events');
+            const storedVocab = localStorage.getItem('superpractice_vocabulary');
             
             if (storedExercises) {
                 window.exercises = JSON.parse(storedExercises);
             }
             if (storedEvents) {
                 window.events = JSON.parse(storedEvents);
+            }
+            if (storedVocab) {
+                words = JSON.parse(storedVocab);
             }
         }
 
@@ -1285,17 +1822,12 @@
         }
 
         async function saveExercisesToSupabase() {
-            // Salva sempre in localStorage per backup
             localStorage.setItem('superpractice_exercises', JSON.stringify(window.exercises));
             
-            if (!supabase) {
-                console.log('Supabase non disponibile, salvo solo in localStorage');
-                return;
-            }
+            if (!supabaseClient) return;
 
             try {
                 for (const exercise of window.exercises) {
-                    // Prepara i dati per Supabase
                     const supabaseExercise = {
                         id: exercise.id,
                         created_at: exercise.created_at || exercise.createdAt || new Date().toISOString(),
@@ -1315,28 +1847,22 @@
                         corrections: exercise.corrections || []
                     };
 
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('exercises')
-                        .upsert(supabaseExercise, {
-                            onConflict: 'id'
-                        });
+                        .upsert(supabaseExercise, { onConflict: 'id' });
                     
                     if (error) throw error;
                 }
-                console.log('✅ Esercizi salvati su Supabase');
+                console.log('✅ Exercises saved to Supabase');
             } catch (error) {
-                console.error('❌ Errore salvataggio esercizi su Supabase:', error);
+                console.error('❌ Error saving exercises to Supabase:', error);
             }
         }
 
         async function saveEventsToSupabase() {
-            // Salva sempre in localStorage per backup
             localStorage.setItem('superpractice_events', JSON.stringify(window.events));
             
-            if (!supabase) {
-                console.log('Supabase non disponibile, salvo solo in localStorage');
-                return;
-            }
+            if (!supabaseClient) return;
 
             try {
                 for (const event of window.events) {
@@ -1354,17 +1880,15 @@
                         participants: event.participants || []
                     };
 
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('events')
-                        .upsert(supabaseEvent, {
-                            onConflict: 'id'
-                        });
+                        .upsert(supabaseEvent, { onConflict: 'id' });
                     
                     if (error) throw error;
                 }
-                console.log('✅ Eventi salvati su Supabase');
+                console.log('✅ Events saved to Supabase');
             } catch (error) {
-                console.error('❌ Errore salvataggio eventi su Supabase:', error);
+                console.error('❌ Error saving events to Supabase:', error);
             }
         }
 
@@ -1376,91 +1900,626 @@
             saveEventsToSupabase();
         }
 
-        // Audio upload functions
-        function initializeAudioUpload() {
-            const audioUpload = document.getElementById('audio-upload');
-            const audioPreview = document.getElementById('audio-preview');
-            const audioPlayer = document.getElementById('audio-player');
-            const audioFilename = document.getElementById('audio-filename');
+        // ========== FUNZIONALITÀ VOCABOLARIO ==========
+        function initializeVocabulary() {
+            renderWordCategories();
+            renderWordCategoryFilter();
+            renderWords();
+            setupWordImageUpload();
+            updateVocabStats();
             
-            audioUpload.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    currentAudioFile = file;
-                    
-                    // Mostra preview
-                    audioPreview.style.display = 'flex';
-                    
-                    // Imposta nome file
-                    audioFilename.textContent = file.name;
-                    
-                    // Crea URL locale per preview
-                    const localUrl = URL.createObjectURL(file);
-                    audioPlayer.src = localUrl;
-                    
-                    // Limita nome file se troppo lungo
-                    if (file.name.length > 30) {
-                        audioFilename.textContent = file.name.substring(0, 30) + '...';
-                    }
+            document.getElementById('word-example-btn').addEventListener('click', loadWordExample);
+            document.getElementById('add-word-category-btn').addEventListener('click', addNewWordCategory);
+            document.getElementById('filter-word-language').addEventListener('change', renderWords);
+            document.getElementById('filter-word-category').addEventListener('change', renderWords);
+            document.getElementById('sort-words-by').addEventListener('change', renderWords);
+            document.getElementById('clear-word-filters').addEventListener('click', clearWordFilters);
+            document.getElementById('export-vocab-btn').addEventListener('click', exportVocabulary);
+            document.getElementById('import-vocab-btn').addEventListener('click', importVocabulary);
+            document.getElementById('manage-vocab-categories-btn').addEventListener('click', manageVocabCategories);
+            document.getElementById('closeModal').addEventListener('click', () => {
+                document.getElementById('imageModal').style.display = 'none';
+            });
+            
+            document.getElementById('imageModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('imageModal')) {
+                    document.getElementById('imageModal').style.display = 'none';
                 }
             });
         }
 
-        function removeAudio() {
-            currentAudioFile = null;
-            document.getElementById('audio-upload').value = '';
-            document.getElementById('audio-preview').style.display = 'none';
-            document.getElementById('audio-filename').textContent = '';
-            document.getElementById('audio-player').src = '';
+        function setupWordImageUpload() {
+            const imageUploadContainer = document.getElementById('word-image-upload-container');
+            const imageUpload = document.getElementById('word-image-upload');
+            const imagePreview = document.getElementById('word-image-preview');
+            const removeImageBtn = document.getElementById('remove-word-image-btn');
+            
+            imageUploadContainer.addEventListener('click', () => {
+                imageUpload.click();
+            });
+            
+            imageUpload.addEventListener('change', handleWordImageSelect);
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                imageUploadContainer.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                imageUploadContainer.addEventListener(eventName, () => {
+                    imageUploadContainer.classList.add('drag-over');
+                }, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                imageUploadContainer.addEventListener(eventName, () => {
+                    imageUploadContainer.classList.remove('drag-over');
+                }, false);
+            });
+            
+            imageUploadContainer.addEventListener('drop', handleWordDrop, false);
+            
+            function handleWordDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    handleWordImageFile(files[0]);
+                }
+            }
+            
+            removeImageBtn.addEventListener('click', () => {
+                currentWordImage = null;
+                imagePreview.src = '';
+                imagePreview.classList.remove('show');
+                removeImageBtn.style.display = 'none';
+                imageUpload.value = '';
+            });
         }
 
-        async function uploadAudioFile(file) {
-            if (!supabase) {
-                console.log('Supabase not available, skipping audio upload');
-                return null;
+        function handleWordImageSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleWordImageFile(file);
             }
+        }
 
-            // Verifica dimensioni file (max 10MB)
-            if (file.size > 10 * 1024 * 1024) {
-                alert('File size too large. Maximum 10MB allowed.');
-                return null;
+        function handleWordImageFile(file) {
+            if (!file.type.match('image.*')) {
+                alert('Please select an image file');
+                return;
             }
-
-            // Verifica tipo file
-            const validTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a'];
-            if (!validTypes.includes(file.type)) {
-                alert('Invalid audio format. Please use MP3, WAV, OGG, or M4A.');
-                return null;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Image is too large. Maximum size: 2MB');
+                return;
             }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                currentWordImage = e.target.result;
+                const imagePreview = document.getElementById('word-image-preview');
+                imagePreview.src = currentWordImage;
+                imagePreview.classList.add('show');
+                document.getElementById('remove-word-image-btn').style.display = 'block';
+            };
+            
+            reader.readAsDataURL(file);
+        }
 
-            try {
-                // Crea un nome file unico
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        function renderWordCategories() {
+            const container = document.getElementById('word-categories-container');
+            container.innerHTML = '';
+            selectedWordCategories = [];
+            
+            vocabCategories.forEach(category => {
+                const categoryEl = document.createElement('div');
+                categoryEl.className = 'category-tag';
+                categoryEl.innerHTML = `
+                    <span class="color-dot" style="background-color: ${category.color}"></span>
+                    ${category.name}
+                `;
                 
-                // Upload file su Supabase Storage
-                const { data, error } = await supabase.storage
-                    .from('exercises')
-                    .upload(`audio/${fileName}`, file, {
-                        cacheControl: '3600',
-                        upsert: false
+                categoryEl.addEventListener('click', () => {
+                    categoryEl.classList.toggle('selected');
+                    
+                    if (categoryEl.classList.contains('selected')) {
+                        categoryEl.style.backgroundColor = category.color;
+                        selectedWordCategories.push(category.id);
+                    } else {
+                        categoryEl.style.backgroundColor = '';
+                        selectedWordCategories = selectedWordCategories.filter(id => id !== category.id);
+                    }
+                });
+                
+                container.appendChild(categoryEl);
+            });
+        }
+
+        function addNewWordCategory() {
+            const nameInput = document.getElementById('new-word-category');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                alert('Enter a name for the category');
+                return;
+            }
+            
+            if (vocabCategories.some(cat => cat.name.toLowerCase() === name.toLowerCase())) {
+                alert('This category already exists');
+                return;
+            }
+            
+            const newId = vocabCategories.length > 0 ? Math.max(...vocabCategories.map(c => c.id)) + 1 : 1;
+            const colors = ['#3498db', '#2ecc71', '#9b59b6', '#f39c12', '#e74c3c', '#1abc9c', '#d35400', '#34495e'];
+            const colorIndex = (newId - 1) % colors.length;
+            
+            const newCategory = {
+                id: newId,
+                name: name,
+                color: colors[colorIndex]
+            };
+            
+            vocabCategories.push(newCategory);
+            saveVocabCategories();
+            renderWordCategories();
+            renderWordCategoryFilter();
+            nameInput.value = '';
+            
+            selectedWordCategories.push(newId);
+            const newCategoryEl = document.getElementById('word-categories-container').lastChild;
+            newCategoryEl.classList.add('selected');
+            newCategoryEl.style.backgroundColor = newCategory.color;
+        }
+
+        function renderWordCategoryFilter() {
+            const filter = document.getElementById('filter-word-category');
+            filter.innerHTML = '<option value="">All categories</option>';
+            
+            vocabCategories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                filter.appendChild(option);
+            });
+        }
+
+        function addNewWord() {
+            const word = document.getElementById('word-input').value.trim();
+            const translation = document.getElementById('translation-input').value.trim();
+            const language = document.getElementById('word-language').value || '';
+            const definition = document.getElementById('definition-input').value.trim();
+            const sentence = document.getElementById('sentence-input').value.trim();
+            const associations = document.getElementById('associations-input').value.trim();
+            
+            if (!word || !translation) {
+                alert('Please enter at least the word and translation');
+                return;
+            }
+            
+            const newWord = {
+                id: Date.now(),
+                word,
+                translation,
+                language,
+                definition,
+                sentence,
+                associations,
+                categories: [...selectedWordCategories],
+                image: currentWordImage,
+                created_at: new Date().toISOString(),
+                dateDisplay: new Date().toLocaleDateString('en-US')
+            };
+            
+            words.unshift(newWord);
+            saveVocabulary();
+            renderWords();
+            updateVocabStats();
+            resetWordForm();
+            
+            alert(`Word "${word}" added successfully!`);
+        }
+
+        function loadWordExample() {
+            document.getElementById('word-input').value = 'Komorebi';
+            document.getElementById('translation-input').value = 'Sunlight filtering through leaves';
+            document.getElementById('word-language').value = 'ja';
+            document.getElementById('definition-input').value = 'Japanese word describing the phenomenon of sunlight filtering through the leaves of trees, creating a beautiful play of light and shadow.';
+            document.getElementById('sentence-input').value = 'In the autumn forest, the komorebi created a magical and suggestive atmosphere.';
+            document.getElementById('associations-input').value = 'Forest • Autumn • Japan • Nature • Light and shadow • Poetry • Tranquility';
+            
+            selectedWordCategories = [1, 6];
+            renderWordCategories();
+            
+            const categoryTags = document.querySelectorAll('#word-categories-container .category-tag');
+            categoryTags.forEach((tag, index) => {
+                if (selectedWordCategories.includes(vocabCategories[index].id)) {
+                    tag.classList.add('selected');
+                    tag.style.backgroundColor = vocabCategories[index].color;
+                }
+            });
+            
+            alert('Example loaded! Note: for security reasons, example images cannot be pre-loaded. You can add one manually.');
+        }
+
+        function resetWordForm() {
+            document.getElementById('word-form').reset();
+            currentWordImage = null;
+            document.getElementById('word-image-preview').src = '';
+            document.getElementById('word-image-preview').classList.remove('show');
+            document.getElementById('remove-word-image-btn').style.display = 'none';
+            selectedWordCategories = [];
+            renderWordCategories();
+        }
+
+        function deleteWord(id) {
+            if (confirm('Are you sure you want to delete this word?')) {
+                words = words.filter(word => word.id !== id);
+                saveVocabulary();
+                renderWords();
+                updateVocabStats();
+            }
+        }
+
+        function viewImage(imageSrc) {
+            document.getElementById('modalImage').src = imageSrc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
+        function renderWords() {
+            const wordsContainer = document.getElementById('words-container');
+            const emptyState = document.getElementById('words-empty-state');
+            
+            let filteredWords = [...words];
+            
+            const selectedLanguage = document.getElementById('filter-word-language').value;
+            if (selectedLanguage) {
+                filteredWords = filteredWords.filter(word => word.language === selectedLanguage);
+            }
+            
+            const selectedCategory = document.getElementById('filter-word-category').value;
+            if (selectedCategory) {
+                filteredWords = filteredWords.filter(word => 
+                    word.categories && word.categories.includes(parseInt(selectedCategory))
+                );
+            }
+            
+            const sortValue = document.getElementById('sort-words-by').value;
+            filteredWords.sort((a, b) => {
+                switch(sortValue) {
+                    case 'date-asc':
+                        return new Date(a.created_at) - new Date(b.created_at);
+                    case 'date-desc':
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    case 'word-asc':
+                        return a.word.localeCompare(b.word);
+                    case 'word-desc':
+                        return b.word.localeCompare(a.word);
+                    default:
+                        return new Date(b.created_at) - new Date(a.created_at);
+                }
+            });
+            
+            document.getElementById('vocab-count').textContent = `${filteredWords.length} words`;
+            
+            if (filteredWords.length === 0) {
+                emptyState.style.display = 'block';
+                wordsContainer.innerHTML = '';
+                wordsContainer.appendChild(emptyState);
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            wordsContainer.innerHTML = '';
+            
+            filteredWords.forEach(word => {
+                const langClass = word.language ? `lang-${word.language}` : 'lang-other';
+                const card = document.createElement('div');
+                card.className = `word-card ${langClass}`;
+                
+                let categoriesHTML = '';
+                if (word.categories && word.categories.length > 0) {
+                    categoriesHTML = '<div class="card-categories">';
+                    word.categories.forEach(catId => {
+                        const category = vocabCategories.find(c => c.id === catId);
+                        if (category) {
+                            categoriesHTML += `<span class="card-category cat-${((catId-1) % 8) + 1}" style="background-color: ${category.color}">${category.name}</span>`;
+                        }
                     });
-
-                if (error) throw error;
-
-                // Ottieni URL pubblico
-                const { data: urlData } = supabase.storage
-                    .from('exercises')
-                    .getPublicUrl(`audio/${fileName}`);
-
-                console.log('✅ Audio uploaded successfully:', urlData.publicUrl);
-                return urlData.publicUrl;
+                    categoriesHTML += '</div>';
+                }
                 
-            } catch (error) {
-                console.error('❌ Error uploading audio:', error);
-                return null;
+                let imageHTML = '';
+                if (word.image) {
+                    imageHTML = `
+                        <div class="card-section">
+                            <div class="section-label">
+                                <i class="fas fa-image"></i> Associated Image
+                            </div>
+                            <img src="${word.image}" class="word-image" onclick="viewImage('${word.image}')" alt="Image for ${word.word}">
+                        </div>
+                    `;
+                }
+                
+                card.innerHTML = `
+                    <button class="delete-btn" onclick="deleteWord(${word.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="word-header">
+                        <div>
+                            <div class="word-title">${word.word}</div>
+                            <div class="word-translation">${word.translation}</div>
+                        </div>
+                        ${word.language ? `<div class="word-language">${languageNames[word.language] || word.language}</div>` : ''}
+                    </div>
+                    
+                    ${categoriesHTML}
+                    
+                    ${word.definition ? `<div class="card-section">
+                        <div class="section-label"><i class="fas fa-info-circle"></i> Definition / Notes</div>
+                        <div>${word.definition}</div>
+                    </div>` : ''}
+                    
+                    ${word.sentence ? `<div class="card-section">
+                        <div class="section-label"><i class="fas fa-quote-right"></i> Example Sentence</div>
+                        <div>${word.sentence.replace(/\n/g, '<br>')}</div>
+                    </div>` : ''}
+                    
+                    ${word.associations ? `<div class="card-section">
+                        <div class="section-label"><i class="fas fa-lightbulb"></i> Creative Associations</div>
+                        <div>${word.associations.replace(/\n/g, '<br>')}</div>
+                    </div>` : ''}
+                    
+                    ${imageHTML}
+                    
+                    <div class="card-section">
+                        <div class="section-label"><i class="fas fa-calendar"></i> Added on</div>
+                        <div>${word.dateDisplay}</div>
+                    </div>
+                `;
+                
+                wordsContainer.appendChild(card);
+            });
+        }
+
+        function clearWordFilters() {
+            document.getElementById('filter-word-language').value = '';
+            document.getElementById('filter-word-category').value = '';
+            document.getElementById('sort-words-by').value = 'date-desc';
+            renderWords();
+        }
+
+        function updateVocabStats() {
+            document.getElementById('total-vocab-words').textContent = words.length;
+            
+            const today = new Date().toDateString();
+            const todayWords = words.filter(word => {
+                const wordDate = new Date(word.created_at).toDateString();
+                return wordDate === today;
+            }).length;
+            document.getElementById('today-vocab-words').textContent = todayWords;
+            
+            document.getElementById('vocab-categories-count').textContent = vocabCategories.length;
+            
+            const wordsWithImages = words.filter(word => word.image).length;
+            document.getElementById('vocab-images-count').textContent = wordsWithImages;
+        }
+
+        function saveVocabulary() {
+            localStorage.setItem('superpractice_vocabulary', JSON.stringify(words));
+        }
+
+        function saveVocabCategories() {
+            localStorage.setItem('superpractice_vocab_categories', JSON.stringify(vocabCategories));
+        }
+
+        function exportVocabulary() {
+            if (words.length === 0) {
+                alert('No vocabulary data to export');
+                return;
+            }
+            
+            const exportData = {
+                words: words,
+                categories: vocabCategories,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `superpractice-vocabulary-${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        function importVocabulary() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        if (!importedData.words || !Array.isArray(importedData.words)) {
+                            throw new Error('File does not contain valid data');
+                        }
+                        
+                        const existingIds = words.map(w => w.id);
+                        const newWords = importedData.words.filter(w => !existingIds.includes(w.id));
+                        
+                        if (importedData.categories && Array.isArray(importedData.categories)) {
+                            importedData.categories.forEach(newCat => {
+                                if (!vocabCategories.some(cat => cat.id === newCat.id)) {
+                                    vocabCategories.push(newCat);
+                                }
+                            });
+                            saveVocabCategories();
+                            renderWordCategories();
+                            renderWordCategoryFilter();
+                        }
+                        
+                        words = [...newWords, ...words];
+                        saveVocabulary();
+                        renderWords();
+                        updateVocabStats();
+                        
+                        alert(`Imported ${newWords.length} new words and ${importedData.categories ? importedData.categories.length : 0} categories!`);
+                    } catch (error) {
+                        alert('Import error: ' + error.message);
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function manageVocabCategories() {
+            let message = 'Current categories:\n\n';
+            vocabCategories.forEach(cat => {
+                message += `• ${cat.name}\n`;
+            });
+            
+            message += '\nWant to delete a category? (Enter the name)';
+            
+            const catToDelete = prompt(message);
+            
+            if (catToDelete) {
+                const foundCat = vocabCategories.find(cat => 
+                    cat.name.toLowerCase() === catToDelete.toLowerCase()
+                );
+                
+                if (foundCat) {
+                    if (confirm(`Are you sure you want to delete the category "${foundCat.name}"? Words in this category will be kept but will lose the association.`)) {
+                        vocabCategories = vocabCategories.filter(cat => cat.id !== foundCat.id);
+                        saveVocabCategories();
+                        renderWordCategories();
+                        renderWordCategoryFilter();
+                        renderWords();
+                        updateVocabStats();
+                        alert('Category deleted!');
+                    }
+                } else {
+                    alert('Category not found');
+                }
             }
         }
+
+        function initializeSampleVocabulary() {
+            if (words.length === 0) {
+                words = [
+                    {
+                        id: 1,
+                        word: 'Saudade',
+                        translation: 'Nostalgic longing',
+                        language: 'pt',
+                        definition: 'A deep emotional state of nostalgic or profound melancholic longing for something or someone that one cares for and/or loves.',
+                        sentence: 'She felt a deep saudade for her homeland while living abroad.',
+                        associations: 'Portugal • Melancholy • Longing • Brazilian music • Fado',
+                        categories: [5, 8],
+                        created_at: new Date().toISOString(),
+                        dateDisplay: new Date().toLocaleDateString('en-US')
+                    },
+                    {
+                        id: 2,
+                        word: 'Schadenfreude',
+                        translation: 'Pleasure from others\' misfortune',
+                        language: 'de',
+                        definition: 'The experience of pleasure, joy, or self-satisfaction that comes from learning of or witnessing the troubles, failures, or humiliation of another.',
+                        sentence: 'He couldn\'t help but feel a bit of Schadenfreude when his rival failed.',
+                        associations: 'German • Psychology • Complex emotions • Dark humor',
+                        categories: [1, 5],
+                        created_at: new Date().toISOString(),
+                        dateDisplay: new Date().toLocaleDateString('en-US')
+                    }
+                ];
+                saveVocabulary();
+            }
+        }
+
+        // ========== FUNZIONI ORIGINALI DI SUPERPRATIKA ==========
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                console.log('✅ Supabase client initialized');
+            } catch (error) {
+                console.error('❌ Supabase initialization error:', error);
+                supabaseClient = null;
+            }
+            
+            await loadDataFromSupabase();
+            initializeNavigation();
+            initializeAudioUpload();
+            initializeVocabulary();
+            loadStormExercises();
+            loadNativeExercises();
+            loadEvents();
+            updateFilters();
+            
+            if (words.length === 0) {
+                initializeSampleVocabulary();
+            }
+            
+            document.getElementById('exercise-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                publishExercise();
+            });
+            
+            document.getElementById('word-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addNewWord();
+            });
+            
+            document.getElementById('tandem-request').addEventListener('change', function() {
+                document.getElementById('tandem-details').classList.toggle('hidden', !this.checked);
+            });
+            
+            document.getElementById('answer-type').addEventListener('change', function() {
+                const isMultipleChoice = this.value === 'multiple';
+                document.getElementById('multiple-choice-section').classList.toggle('hidden', !isMultipleChoice);
+                document.getElementById('open-answer-section').classList.toggle('hidden', isMultipleChoice);
+                
+                if (!isMultipleChoice) {
+                    document.getElementById('correction-type').value = 'native';
+                    document.getElementById('correction-type').disabled = true;
+                } else {
+                    document.getElementById('correction-type').disabled = false;
+                }
+            });
+            
+            document.getElementById('correction-type').addEventListener('change', function() {
+                if (this.value === 'auto') {
+                    document.getElementById('answer-type').value = 'multiple';
+                    document.getElementById('multiple-choice-section').classList.remove('hidden');
+                    document.getElementById('open-answer-section').classList.add('hidden');
+                }
+            });
+            
+            document.getElementById('filter-language').addEventListener('change', filterContent);
+            document.getElementById('filter-topic').addEventListener('change', filterContent);
+            document.getElementById('filter-tutor').addEventListener('change', filterContent);
+            document.getElementById('filter-city').addEventListener('input', filterEvents);
+            
+            if (window.exercises.length === 0 && window.events.length === 0) {
+                initializeSampleData();
+            }
+        });
 
         // Navigation
         function initializeNavigation() {
@@ -1481,6 +2540,9 @@
                         loadNativeExercises();
                     } else if (targetSection === 'events-exchanges') {
                         loadEvents();
+                    } else if (targetSection === 'vocabulary') {
+                        renderWords();
+                        updateVocabStats();
                     }
                 });
             });
@@ -1525,6 +2587,82 @@
             });
         }
 
+        // Audio upload functions
+        function initializeAudioUpload() {
+            const audioUpload = document.getElementById('audio-upload');
+            const audioPreview = document.getElementById('audio-preview');
+            const audioPlayer = document.getElementById('audio-player');
+            const audioFilename = document.getElementById('audio-filename');
+            
+            audioUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    currentAudioFile = file;
+                    
+                    audioPreview.style.display = 'flex';
+                    audioFilename.textContent = file.name;
+                    
+                    const localUrl = URL.createObjectURL(file);
+                    audioPlayer.src = localUrl;
+                    
+                    if (file.name.length > 30) {
+                        audioFilename.textContent = file.name.substring(0, 30) + '...';
+                    }
+                }
+            });
+        }
+
+        function removeAudio() {
+            currentAudioFile = null;
+            document.getElementById('audio-upload').value = '';
+            document.getElementById('audio-preview').style.display = 'none';
+            document.getElementById('audio-filename').textContent = '';
+            document.getElementById('audio-player').src = '';
+        }
+
+        async function uploadAudioFile(file) {
+            if (!supabaseClient) {
+                console.log('Supabase not available, skipping audio upload');
+                return null;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size too large. Maximum 10MB allowed.');
+                return null;
+            }
+
+            const validTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a'];
+            if (!validTypes.includes(file.type)) {
+                alert('Invalid audio format. Please use MP3, WAV, OGG, or M4A.');
+                return null;
+            }
+
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                
+                const { data, error } = await supabaseClient.storage
+                    .from('exercises')
+                    .upload(`audio/${fileName}`, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+
+                if (error) throw error;
+
+                const { data: urlData } = supabaseClient.storage
+                    .from('exercises')
+                    .getPublicUrl(`audio/${fileName}`);
+
+                console.log('✅ Audio uploaded successfully:', urlData.publicUrl);
+                return urlData.publicUrl;
+                
+            } catch (error) {
+                console.error('❌ Error uploading audio:', error);
+                return null;
+            }
+        }
+
         // Exercise publishing
         async function publishExercise() {
             const name = document.getElementById('creator-name').value.trim();
@@ -1552,13 +2690,11 @@
                 }
             }
             
-            // Validation
             if (!name || !language || !topic || !question) {
                 alert('Please fill all required fields!');
                 return;
             }
             
-            // Upload audio se presente
             let uploadedAudioUrl = null;
             if (currentAudioFile) {
                 try {
@@ -1574,7 +2710,6 @@
                 }
             }
             
-            // Add topic to filters
             topics.add(topic);
             tutors.add(name);
             updateFilters();
@@ -1630,7 +2765,6 @@
             document.getElementById('open-answer-section').classList.add('hidden');
             document.getElementById('correction-type').disabled = false;
             
-            // Resetta anche l'audio
             removeAudio();
             
             optionCounter = 2;
@@ -1642,10 +2776,8 @@
             const stormList = document.getElementById('storm-list');
             const stormCount = document.getElementById('storm-count');
             
-            // Filter only auto-correction exercises
             let stormExercises = window.exercises.filter(ex => ex.correction_type === 'auto');
             
-            // Apply additional filters
             const languageFilter = document.getElementById('filter-language').value;
             const topicFilter = document.getElementById('filter-topic').value;
             const tutorFilter = document.getElementById('filter-tutor').value;
@@ -1670,7 +2802,6 @@
             
             stormCount.textContent = `${stormExercises.length} exercises`;
             
-            // Show current exercise
             const currentExercise = stormExercises[currentExerciseIndex];
             if (!currentExercise) {
                 stormList.innerHTML = '<p>No exercises available.</p>';
@@ -1763,7 +2894,6 @@
             const exercise = window.exercises.find(ex => ex.id === exerciseId);
             if (!exercise) return;
             
-            // Save user answer
             if (!exercise.user_answers) {
                 exercise.user_answers = {};
             }
@@ -1801,10 +2931,8 @@
             const nativeList = document.getElementById('native-list');
             const nativeCount = document.getElementById('native-count');
             
-            // Filter only native correction exercises
             let nativeExercises = window.exercises.filter(ex => ex.correction_type === 'native');
             
-            // Apply additional filters
             const languageFilter = document.getElementById('filter-language').value;
             const topicFilter = document.getElementById('filter-topic').value;
             const tutorFilter = document.getElementById('filter-tutor').value;
@@ -1926,7 +3054,6 @@
             const exercise = window.exercises.find(ex => ex.id === exerciseId);
             if (!exercise) return;
             
-            // Save user answer
             if (!exercise.user_answers) {
                 exercise.user_answers = {};
             }
@@ -1978,7 +3105,6 @@
                 return;
             }
             
-            // Update exercise with correction
             if (!exercise.corrections) {
                 exercise.corrections = [];
             }
@@ -2046,7 +3172,6 @@
             loadEvents();
             hideEventForm();
             
-            // Reset form
             document.getElementById('event-title').value = '';
             document.getElementById('event-date').value = '';
             document.getElementById('event-time').value = '';
@@ -2198,26 +3323,6 @@
                         user_open_answers: {},
                         tandem_request: false,
                         corrections: []
-                    },
-                    {
-                        id: 3,
-                        creator: "Audio Teacher",
-                        language: "english",
-                        topic: "Pronunciation",
-                        correction_type: "auto",
-                        question: "Listen and select the correct pronunciation:",
-                        answer_type: "multiple",
-                        options: [
-                            { text: "Pronounced as /θɪŋk/", correct: true },
-                            { text: "Pronounced as /tɪŋk/", correct: false },
-                            { text: "Pronounced as /sɪŋk/", correct: false }
-                        ],
-                        explanation: "The correct pronunciation is /θɪŋk/ with the voiceless dental fricative 'th' sound.",
-                        audio_url: "https://sfvhnggywsdekmarrxlt.supabase.co/storage/v1/object/public/exercises/audio/sample_pronunciation.mp3",
-                        created_at: new Date().toISOString(),
-                        user_answers: {},
-                        tandem_request: false,
-                        corrections: []
                     }
                 ];
                 saveExercises();
@@ -2255,10 +3360,26 @@
                 saveEvents();
             }
             
-            // Update filters
             updateFiltersFromData();
             updateFilters();
         }
+
+        // Make functions available globally
+        window.deleteWord = deleteWord;
+        window.viewImage = viewImage;
+        window.removeOption = removeOption;
+        window.addOption = addOption;
+        window.removeAudio = removeAudio;
+        window.selectStormOption = selectStormOption;
+        window.nextStormExercise = nextStormExercise;
+        window.selectNativeOption = selectNativeOption;
+        window.submitNativeAnswer = submitNativeAnswer;
+        window.submitCorrection = submitCorrection;
+        window.requestTandem = requestTandem;
+        window.showEventForm = showEventForm;
+        window.hideEventForm = hideEventForm;
+        window.saveEvent = saveEvent;
+        window.joinEvent = joinEvent;
     </script>
 </body>
 </html>
